@@ -1,0 +1,11 @@
+name: CraftControl
+main: com.madjam002.craftcontrol.CraftControl
+version: 1.0
+
+permissions:
+    craftcontrol.craft.*:
+        description: Allows the player to craft certain items
+        default: true
+    craftcontrol.smelt.*:
+        description: Allows the player to smelt certain items
+        default: true
