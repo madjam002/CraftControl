@@ -23,6 +23,7 @@
         <directory>${basedir}</directory>
           <includes>
             <include>plugin.yml</include>
+            <include>config.yml</include>
           </includes>
       </resource>
     </resources>
@@ -41,4 +42,9 @@
       <version>1.7.2-R0.2</version>
     </dependency>
   </dependencies>
+  <url>http://dev.bukkit.org/bukkit-plugins/craftcontrol/</url>
+  <ciManagement>
+  	<system>Jenkins</system>
+  	<url>http://madjamonline.com:8080/job/CraftControl/</url>
+  </ciManagement>
 </project>

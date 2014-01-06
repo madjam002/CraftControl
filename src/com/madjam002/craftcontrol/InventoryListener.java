@@ -15,9 +15,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class InventoryListener implements Listener {
     
     CraftControl plugin;
+    PermissionChecker permissionChecker;
+    MessageHelper messageHelper;
     
-    public InventoryListener(CraftControl plugin) {
+    public InventoryListener(CraftControl plugin, PermissionChecker permissionChecker, MessageHelper messageHelper) {
         this.plugin = plugin;
+        this.permissionChecker = permissionChecker;
+        this.messageHelper = messageHelper;
     }
 
     @EventHandler
@@ -25,10 +29,10 @@ public class InventoryListener implements Listener {
         Player player = (Player) event.getView().getPlayer();
         ItemStack result = event.getInventory().getResult();
         
-        if (!PermissionChecker.check(player, "craft", result.getType())) {
+        if (!permissionChecker.check(player, "craft", result.getType())) {
             // Change display name
             ItemMeta meta = result.getItemMeta();
-            meta.setDisplayName(ChatColor.RED + "You cannot craft this");
+            meta.setDisplayName(ChatColor.RED + messageHelper.getMessage("messages.craft.denied", result.getType(), "You cannot craft this item"));
             result.setItemMeta(meta);
             
             // Update crafting result
@@ -41,7 +45,7 @@ public class InventoryListener implements Listener {
         Player player = (Player) event.getView().getPlayer();
         ItemStack result = event.getInventory().getResult();
         
-        if (!PermissionChecker.check(player, "craft", result.getType())) {
+        if (!permissionChecker.check(player, "craft", result.getType())) {
             // Cancel movement of forbidden item
             event.setCancelled(true);
         }
@@ -65,7 +69,7 @@ public class InventoryListener implements Listener {
                 object = event.getInventory().getItem(0);
             }
             
-            if (object != null && !PermissionChecker.check(player, "smelt", object.getType())) {
+            if (object != null && !permissionChecker.check(player, "smelt", object.getType())) {
                 // Cancel smelting of the forbidden item
                 event.setCancelled(true);
             }

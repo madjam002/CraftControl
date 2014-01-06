@@ -9,8 +9,15 @@ public final class CraftControl extends JavaPlugin {
     public void onEnable() {
         PluginManager pm = getServer().getPluginManager();
         
+        // Save Default Configuration
+        saveDefaultConfig();
+        
+        // Helper classes
+        PermissionChecker permissionChecker = new PermissionChecker();
+        MessageHelper messageHelper = new MessageHelper(this);
+        
         // Register Events
-        pm.registerEvents(new InventoryListener(this), this);
+        pm.registerEvents(new InventoryListener(this, permissionChecker, messageHelper), this);
     }
     
     @Override
