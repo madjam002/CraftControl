@@ -1,4 +1,4 @@
-package com.madjam002.craftcontrol;
+package com.madjam002.craftcontrol.util;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

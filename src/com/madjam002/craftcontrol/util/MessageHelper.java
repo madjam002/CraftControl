@@ -1,7 +1,9 @@
-package com.madjam002.craftcontrol;
+package com.madjam002.craftcontrol.util;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import com.madjam002.craftcontrol.CraftControl;
 
 public final class MessageHelper {
     
