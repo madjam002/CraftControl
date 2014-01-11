@@ -3,7 +3,8 @@ package com.madjam002.craftcontrol;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.madjam002.craftcontrol.listener.InventoryListener;
+import com.madjam002.craftcontrol.listener.CraftingListener;
+import com.madjam002.craftcontrol.listener.FurnaceListener;
 import com.madjam002.craftcontrol.util.MessageHelper;
 import com.madjam002.craftcontrol.util.PermissionChecker;
 
@@ -21,7 +22,8 @@ public final class CraftControl extends JavaPlugin {
         MessageHelper messageHelper = new MessageHelper(this);
         
         // Register Events
-        pm.registerEvents(new InventoryListener(this, permissionChecker, messageHelper), this);
+        pm.registerEvents(new CraftingListener(this, permissionChecker, messageHelper), this);
+        pm.registerEvents(new FurnaceListener(this, permissionChecker, messageHelper), this);
         
         // Start Worker
         WorkerTask.start(this);
