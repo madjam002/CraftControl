@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -11,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 
@@ -59,9 +61,12 @@ public class RecipeLoader {
         if (!recipeConfig.isConfigurationSection("ingredients")) {
             throw new IllegalArgumentException("ingredients must be a key value pair of ingredients");
         }
+        if (recipeConfig.contains("enchantments") && !recipeConfig.isList("enchantments")) {
+            throw new IllegalArgumentException("enchantments must be an array of enchantment objects");
+        }
         
         // get material from item string
-        Material resultItemMaterial = Material.getMaterial(recipeConfig.getString("result.item"));
+        Material resultItemMaterial = Material.getMaterial(recipeConfig.getString("result.item").toUpperCase());
         if (resultItemMaterial == null) {
             throw new IllegalArgumentException("result.item must be a valid bukkit material name");
         }
@@ -72,8 +77,31 @@ public class RecipeLoader {
             amount = recipeConfig.getInt("result.amount");
         }
         
-        // create item stack and recipe object
+        // create item stack
         ItemStack result = new ItemStack(resultItemMaterial, amount);
+        
+        // enchantments
+        if (recipeConfig.isList("enchantments")) {
+            List<Map<?, ?>> enchantments = recipeConfig.getMapList("enchantments");
+            
+            for (Map<?, ?> enchantmentConfig : enchantments) {
+                if (!enchantmentConfig.containsKey("type")) {
+                    throw new IllegalArgumentException("enchantment.type must be a valid bukkit material name");
+                }
+                if (!enchantmentConfig.containsKey("level")) {
+                    throw new IllegalArgumentException("enchantment.level must be an integer");
+                }
+                
+                Enchantment enchantment = Enchantment.getByName(((String) enchantmentConfig.get("type")).toUpperCase());
+                if (enchantment == null) {
+                    throw new IllegalArgumentException("enchantment.type must be mapped to a valid enchantment name");
+                }
+                
+                result.addEnchantment(enchantment, (Integer) enchantmentConfig.get("level"));
+            }
+        }
+        
+        // create recipe object
         ShapedRecipe recipe = new ShapedRecipe(result);
         
         // set the shape of the recipe from the shape array
@@ -87,7 +115,7 @@ public class RecipeLoader {
                 throw new IllegalArgumentException("Invalid ingredient key: " + ingredientKey);
             }
             
-            Material ingredient = Material.getMaterial(recipeConfig.getString("ingredients." + ingredientKey));
+            Material ingredient = Material.getMaterial(recipeConfig.getString("ingredients." + ingredientKey).toUpperCase());
             if (ingredient == null) {
                 throw new IllegalArgumentException("ingredients." + ingredientKey + " must be mapped to a valid bukkit material name");
             }
