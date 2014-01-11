@@ -1,11 +1,20 @@
 package com.madjam002.craftcontrol;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.FurnaceBurnEvent;
+import org.bukkit.event.inventory.FurnaceExtractEvent;
+import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -30,9 +39,10 @@ public class InventoryListener implements Listener {
         ItemStack result = event.getInventory().getResult();
         
         if (!permissionChecker.check(player, "craft", result.getType())) {
-            // Change display name
+            // Change display name and remove lores
             ItemMeta meta = result.getItemMeta();
             meta.setDisplayName(ChatColor.RED + messageHelper.getMessage("messages.craft.denied", result.getType(), "You cannot craft this item"));
+            meta.setLore(new ArrayList<String>());
             result.setItemMeta(meta);
             
             // Update crafting result
@@ -58,22 +68,40 @@ public class InventoryListener implements Listener {
         SlotType slotType = event.getSlotType();
         int slotIndex = event.getSlot();
         
-        // Smelting
-        if (inventoryType.equals(InventoryType.FURNACE) && slotType.equals(SlotType.CONTAINER)) {
-            ItemStack object = null;
-            if (event.isShiftClick()) {
-                object = event.getCurrentItem();
-            } else if (slotIndex == 0 && event.getCursor() != null) {
-                object = event.getCursor();
-            } else if (slotIndex == 1 && event.getInventory().getItem(0) != null) {
-                object = event.getInventory().getItem(0);
-            }
-            
-            if (object != null && !permissionChecker.check(player, "smelt", object.getType())) {
-                // Cancel smelting of the forbidden item
-                event.setCancelled(true);
+        if (inventoryType.equals(InventoryType.FURNACE)) {
+            Furnace furnace = (Furnace) event.getInventory().getHolder();
+
+            ItemStack result = event.getCurrentItem();
+            if (result != null && !result.getType().equals(Material.AIR) && slotType.equals(SlotType.RESULT)) {
+                ItemMeta meta = result.getItemMeta();
+                if (meta.hasLore()) {
+                    // Change display name
+                    meta.setDisplayName(meta.getLore().get(0));
+                    meta.setLore(null);
+                    result.setItemMeta(meta);
+                    
+                    event.setCurrentItem(result);
+                }
             }
         }
     }
-
+ 
+    @EventHandler
+    public void onFurnaceSmelt(FurnaceSmeltEvent event) {
+        Furnace furnace = (Furnace) event.getBlock().getState();
+        ItemStack source = furnace.getInventory().getItem(0);
+        
+        // Change display name
+        final ItemMeta meta = source.getItemMeta();
+        meta.setLore(new ArrayList<String>() {{ add(meta.getDisplayName()); }});
+        meta.setDisplayName(ChatColor.RED + messageHelper.getMessage("messages.smelt.denied", source.getType(), "You cannot smelt this item"));
+        source.setItemMeta(meta);
+        
+        // Update smelting result
+        furnace.getInventory().setSmelting(new ItemStack(Material.AIR));
+        event.setCancelled(true);
+        
+        furnace.getInventory().setResult(source);
+    }
+    
 }
