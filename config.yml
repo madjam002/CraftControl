@@ -1,5 +1,29 @@
+#########################################
+## CraftControl Configuration Examples ##
+#########################################
+
+## Messages ##
+# With Craft Control, it is possible to display custom messages to a player when they do not have permission.
+# The message can also be different depending on what item the player was denied access to.
+
+# messages:
+#     craft:
+#         denied:
+#             default: You cannot craft this item
+#             tnt: TNT is not allowed on this server
+
+# A list of names of items which you can use above can be found at:
+# http://jd.bukkit.org/rb/apidocs/org/bukkit/Material.html
+
+# You can also have a simple general message which is displayed for all items when a player doesn't have permission
+
+# messages:
+#     craft:
+#         denied: You cannot craft this item
+
+# Unfortunately, messages aren't supported for furnaces/smelting at the moment.
+# The default configuration can be found below
+
 messages:
     craft:
-        denied: You cannot craft this!
-    smelt:
-        denied: You cannot smelt this!
+        denied: You cannot craft this item

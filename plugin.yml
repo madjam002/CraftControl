@@ -1,6 +1,6 @@
 name: CraftControl
 main: com.madjam002.craftcontrol.CraftControl
-version: 1.0
+version: 0.0.2
 
 permissions:
     craftcontrol.craft.*:

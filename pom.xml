@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.madjam002</groupId>
   <artifactId>craftcontrol</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2</version>
   <name>CraftControl</name>
   <description>A Bukkit Plugin which allows you to control what plugins can craft, smelt and repair by using permissions.</description>
   <build>
