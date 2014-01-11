@@ -1,3 +1,5 @@
 messages:
     craft:
         denied: You cannot craft this!
+    smelt:
+        denied: You cannot smelt this!
