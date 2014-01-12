@@ -1,7 +1,13 @@
 package com.madjam002.craftcontrol.listener;
 
+import net.minecraft.server.v1_7_R1.CraftingManager;
+import net.minecraft.server.v1_7_R1.InventoryCrafting;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventoryCrafting;
+import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
@@ -32,7 +38,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         Entity entity = event.getRightClicked();
-        Player player = event.getPlayer();
+        Player player = (Player) event.getPlayer();
         
         if (entity.getType().equals(EntityType.ITEM_FRAME)) {
             ItemFrame itemFrame = (ItemFrame) entity;
@@ -42,9 +48,16 @@ public class PlayerListener implements Listener {
                 
                 ItemStack[] contents = (ItemStack[]) itemFrame.getMetadata("craftingStation").get(0).value();
                 InventoryView inventoryView = player.openWorkbench(null, true);
-                CraftingInventory inventory = (CraftingInventory) inventoryView.getTopInventory(); 
+                CraftInventoryCrafting inventory = (CraftInventoryCrafting) inventoryView.getTopInventory(); 
                 
                 inventory.setMatrix(contents);
+                
+                // BEGIN MINECRAFT SERVER
+                inventory.setResult(CraftItemStack.asBukkitCopy(CraftingManager.getInstance().craft(
+                    (InventoryCrafting) inventory.getMatrixInventory(),
+                    ((CraftWorld) player.getWorld()).getHandle()
+                )));
+                // END MINECRAFT SERVER
                 
                 event.setCancelled(true);
                 playerData.setData(player, "insideCraftingStation", inventoryView);
