@@ -32,7 +32,7 @@ public final class CraftControl extends JavaPlugin {
         recipeLoader = new RecipeLoader(this);
         recipeLoader.loadFromConfig();
         
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Loaded " + recipeLoader.getRecipes().size() + " custom recipe(s)");
+        getServer().getConsoleSender().sendMessage("[CraftControl] " + ChatColor.GREEN + "Loaded " + recipeLoader.getRecipes().size() + " custom recipe(s)");
         
         // Register Events
         pm.registerEvents(new PlayerListener(this, playerData), this);

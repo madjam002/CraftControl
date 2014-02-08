@@ -6,7 +6,17 @@ import org.bukkit.entity.Player;
 public final class PermissionChecker {
     
     public boolean check(Player player, String kind, Material type) {
-        return player.hasPermission(String.format("craftcontrol.%s.%s", kind, type.name()));
+        boolean allowed = true;
+        
+        if (player.isPermissionSet(String.format("craftcontrol.%s.*", kind)) && !player.hasPermission(String.format("craftcontrol.%s.*", kind))) {
+            allowed = false;
+        }
+
+        if (player.isPermissionSet(String.format("craftcontrol.%s.%s", kind, type.name()))) {
+            allowed = player.hasPermission(String.format("craftcontrol.%s.%s", kind, type.name()));
+        }
+        
+        return allowed;
     }
     
 }
