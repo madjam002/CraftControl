@@ -6,11 +6,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.madjam002.craftcontrol.listener.CraftingListener;
 import com.madjam002.craftcontrol.listener.FurnaceListener;
-import com.madjam002.craftcontrol.listener.PlayerListener;
 import com.madjam002.craftcontrol.recipe.RecipeLoader;
 import com.madjam002.craftcontrol.util.MessageHelper;
 import com.madjam002.craftcontrol.util.PermissionChecker;
-import com.madjam002.craftcontrol.util.PlayerData;
 
 public final class CraftControl extends JavaPlugin {
     
@@ -26,7 +24,6 @@ public final class CraftControl extends JavaPlugin {
         // Helper classes
         PermissionChecker permissionChecker = new PermissionChecker();
         MessageHelper messageHelper = new MessageHelper(this);
-        PlayerData playerData = new PlayerData();
         
         // Load Custom Recipes
         recipeLoader = new RecipeLoader(this);
@@ -35,7 +32,6 @@ public final class CraftControl extends JavaPlugin {
         getServer().getConsoleSender().sendMessage("[CraftControl] " + ChatColor.GREEN + "Loaded " + recipeLoader.getRecipes().size() + " custom recipe(s)");
         
         // Register Events
-        pm.registerEvents(new PlayerListener(this, playerData), this);
         pm.registerEvents(new CraftingListener(this, permissionChecker, messageHelper), this);
         pm.registerEvents(new FurnaceListener(this, permissionChecker, messageHelper), this);
         
